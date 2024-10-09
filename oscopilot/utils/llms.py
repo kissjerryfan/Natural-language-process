@@ -63,9 +63,9 @@ class OpenAI:
             temperature=temperature
         )
 
-        # if len(prefix) > 0 and prefix[-1] != " ":
-        #     prefix += " "
-        # logging.info(f"{prefix}Response: {response.choices[0].message.content}")
+        if len(prefix) > 0 and prefix[-1] != " ":
+            prefix += " "
+        logging.info(f"{prefix}Response: {response.choices[0].message.content}")
 
         return response.choices[0].message.content
 
@@ -122,15 +122,14 @@ class OLLAMA:
         }
 
         headers = {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + OPENAI_API_KEY}
+                "Content-Type": "application/json"}
 
         response = requests.post(self.llama_serve, data=json.dumps(payload),headers=headers)
 
         if response.status_code == 200:
             # Get the response data
-            logging.info(f"""Response: {response.json()["choices"][0]["message"]["content"]}""")
-            return response.json()["choices"][0]["message"]["content"]
+            logging.info(f"""Response: {response.json()["message"]["content"]}""")
+            return response.json()["message"]["content"]
         else:
             logging.error("Failed to call LLM: ", response.status_code)
             return ""
@@ -141,7 +140,8 @@ def main():
     # message.append({"role": "user", "content": 'hello'})
     # print(OPENAI_API_KEY)
     # print(BASE_URL)
-    llm = OLLAMA()
+    # llm = OLLAMA()
+    llm = OpenAI()
     response = llm.chat(messages)
     print(response)
     end_time = time.time()
