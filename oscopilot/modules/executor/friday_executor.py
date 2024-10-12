@@ -81,6 +81,7 @@ class FridayExecutor(BaseModule):
             invoke = ''
         return code, invoke
 
+
     def execute_tool(self, code, invoke, node_type):
         """
         Executes a given tool code and returns the execution state.
