@@ -10,7 +10,9 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 MODEL_NAME = os.getenv('MODEL_NAME')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+print(OPENAI_API_KEY)
 OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
+OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL')
 BASE_URL = os.getenv('OPENAI_BASE_URL')
 
 # add
@@ -94,7 +96,6 @@ class OLLAMA:
 
         self.model_name = MODEL_NAME
 
-        # self.llama_serve = MODEL_SERVER + "/api/chat"
         self.llama_serve = MODEL_SERVER
 
     def chat(self, messages, temperature=0, prefix=""):
@@ -116,20 +117,23 @@ class OLLAMA:
         payload = {
             "model": self.model_name,
             "messages": messages,
-            "stream": False,
-            "temperature": 0.1,
-            "top_p": 0.1
+            "stream": False
+            
         }
 
         headers = {
-                "Content-Type": "application/json"}
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + OPENAI_API_KEY,
+        }
 
         response = requests.post(self.llama_serve, data=json.dumps(payload),headers=headers)
 
         if response.status_code == 200:
             # Get the response data
-            logging.info(f"""Response: {response.json()["message"]["content"]}""")
-            return response.json()["message"]["content"]
+            logging.info(f"""Response: {response.json()['choices'][0]['message']['content']}""")
+            # logging.info(f"""Response: {response.json()["message"]["content"]}""")
+            return response.json()['choices'][0]['message']['content']
+            #return response.json()["message"]["content"]
         else:
             logging.error("Failed to call LLM: ", response.status_code)
             return ""
@@ -140,8 +144,7 @@ def main():
     # message.append({"role": "user", "content": 'hello'})
     # print(OPENAI_API_KEY)
     # print(BASE_URL)
-    # llm = OLLAMA()
-    llm = OpenAI()
+    llm = OLLAMA()
     response = llm.chat(messages)
     print(response)
     end_time = time.time()

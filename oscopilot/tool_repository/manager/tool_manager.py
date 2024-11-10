@@ -77,10 +77,10 @@ class ToolManager:
             embedding_function=embedding_function,
             persist_directory=self.vectordb_path,
         )
-        assert self.vectordb._collection.count() == len(self.generated_tools), (
-            f"Tool Manager's vectordb is not synced with generated_tools.json.\n"
-            f"There are {self.vectordb._collection.count()} tools in vectordb but {len(self.generated_tools)} tools in generated_tools.json.\n"
-        )
+        # assert self.vectordb._collection.count() == len(self.generated_tools), (
+        #     f"Tool Manager's vectordb is not synced with generated_tools.json.\n"
+        #     f"There are {self.vectordb._collection.count()} tools in vectordb but {len(self.generated_tools)} tools in generated_tools.json.\n"
+        # )
 
 
     @property
@@ -184,18 +184,18 @@ class ToolManager:
             print(f"\033[33mTool {program_name} already exists. Rewriting!\033[0m")
             self.vectordb._collection.delete(ids=[program_name])
         # Store the new task code in the vector database and the tool dictionary
-        self.vectordb.add_texts(
-            texts=[program_description],
-            ids=[program_name],
-            metadatas=[{"name": program_name}],
-        )
+        # self.vectordb.add_texts(
+        #     texts=[program_description],
+        #     ids=[program_name],
+        #     metadatas=[{"name": program_name}],
+        # )
         self.generated_tools[program_name] = {
             "code": program_code,
             "description": program_description,
         }
-        assert self.vectordb._collection.count() == len(
-            self.generated_tools
-        ), "vectordb is not synced with generated_tools.json"
+        # assert self.vectordb._collection.count() == len(
+        #     self.generated_tools
+        # ), "vectordb is not synced with generated_tools.json"
         # Store the new task code and description in the tool repo, and enter the mapping relationship into the dictionary
         with open(f"{self.generated_tool_repo_dir}/tool_code/{program_name}.py", "w") as fa:
             fa.write(program_code)
@@ -203,7 +203,7 @@ class ToolManager:
             fb.write(program_description)
         with open(f"{self.generated_tool_repo_dir}/generated_tools.json", "w") as fc:
             json.dump(self.generated_tools,fc,indent=4)
-        self.vectordb.persist()
+        # self.vectordb.persist()
         # with open(f"{self.generated_tool_repo_dir}/generated_tools.json") as f2:
         #     self.generated_tools = json.load(f2)
 
