@@ -1,0 +1,1 @@
+This function demonstrates how to authenticate with Gmail API, fetch unread emails, and send an email using Gmail API
