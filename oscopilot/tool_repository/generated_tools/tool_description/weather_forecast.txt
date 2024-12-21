@@ -1,0 +1,1 @@
+Get the current weather and 9-day weather forecast from the Hong Kong Observatory API
